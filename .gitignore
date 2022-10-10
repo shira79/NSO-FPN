@@ -1,0 +1,7 @@
+/src/.env
+# access_tokenを保存するファイルを配置するディレクトリ
+/src/nso/credentials/*
+!/src/nso/credentials/.gitkeep
+# フレンドのステートを保存するファイルを配置するディレクトリ
+/src/storage/friend/*
+!/src/storage/friend/.gitkeep

@@ -1,0 +1,1 @@
+*/5 * * * * cd /var/www/html && /usr/local/bin/php index.php
