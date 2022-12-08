@@ -10,6 +10,10 @@ class NSO
     const ACCESS_TOKEN_URL = 'https://api-lp1.znc.srv.nintendo.net/v3/Account/Login';
     const FRIEND_LIST_URL = 'https://api-lp1.znc.srv.nintendo.net/v3/Friend/List';
 
+    const NSO_APPLE_PAGE_URL = 'https://apps.apple.com/us/app/nintendo-switch-online/id1234806557';
+    const NSO_LATEST_VERSION_TAG_NAME = 'p';
+    const NSO_LATEST_VERSION_CLASS_NAME = 'whats-new__latest__version';
+
     // ref https://github.com/JoneWang/imink/wiki/imink-API-Documentation
     const F_GEN_URL = 'https://api.imink.app/f';
     const HASH_METHOD_NUMBER = 1;
@@ -19,9 +23,9 @@ class NSO
 
     private string $accessTokenFilePath = 'nso/credentials/access_token.txt';
 
-    //TODO App Storeにアクセスして最新版を取ってきてもいい(挙動変わらないか不安だけど)
-    private string $nsoAppVersion = '2.3.1';
     private string $iosVersion = '16.0.0';
+
+    private string $nsoAppVersion;
 
     private string $sessionToken;
     private string $naIdToken;
@@ -37,6 +41,7 @@ class NSO
     public function __construct()
     {
         $this->setSessionToken(getenv('nso_session_token'));
+        $this->fetchNsoAppVersion();
         $this->fetchAccessToken();
     }
 
@@ -56,6 +61,22 @@ class NSO
         $response = $this->sendRequest(self::FRIEND_LIST_URL, $header, $body);
 
         return $response['result']['friends'];
+    }
+
+    private function fetchNsoAppVersion()
+    {
+        $html = file_get_contents(self::NSO_APPLE_PAGE_URL);
+
+        $dom = new DOMDocument();
+        $dom->loadHTML($html);
+
+        $pElements = $dom->getElementsByTagName(self::NSO_LATEST_VERSION_TAG_NAME);
+        foreach ($pElements as $pElement) {
+            if ($pElement->hasAttribute('class') && strpos($pElement->getAttribute('class'), self::NSO_LATEST_VERSION_CLASS_NAME) !== false) {
+                $version = str_replace('Version  ', '', $pElement->textContent);
+                $this->setNsoAppVersion($version);
+            }
+        }
     }
 
     private function fetchToken()
@@ -177,6 +198,11 @@ class NSO
         $this->setF($response['f']);
         $this->setTimestamp($response['timestamp']);
         $this->setRequestId($response['request_id']);
+    }
+
+    private function setNsoAppVersion(string $value)
+    {
+        $this->nsoAppVersion = $value;
     }
 
     private function setNaIdToken(string $value)
