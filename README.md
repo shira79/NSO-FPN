@@ -1,8 +1,7 @@
 # NSO-FPN
 **Nintendo Switch Online - Friend Presence Notifier**
 
-任天堂Switchのお気に入りのフレンドがゲームを始めた/やめた場合にLINE Notifyに通知。
-
+任天堂Switchのフレンドのオンライン状態が変わったらLINEに通知する
 <img width="446" alt="スクリーンショット 2022-10-10 22 03 43" src="https://user-images.githubusercontent.com/42834409/194895511-902c6fad-d9c7-44b0-adbc-eb110956b924.png">
 
 ## 準備
